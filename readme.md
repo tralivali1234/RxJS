@@ -20,6 +20,8 @@
 
 # The Reactive Extensions for JavaScript (RxJS) <sup>4.0</sup>... #
 
+Note: RxJS v5 beta is being developed at https://github.com/ReactiveX/rxjs.
+
 *...is a set of libraries to compose asynchronous and event-based programs using observable collections and [Array#extras](http://blogs.msdn.com/b/ie/archive/2010/12/13/ecmascript-5-part-2-array-extras.aspx) style composition in JavaScript*
 
 The project is actively developed by [Microsoft](https://microsoft.com/), in collaboration with a community of open source developers.
@@ -47,7 +49,7 @@ const source = getAsyncStockData();
 const subscription = source
   .filter(quote => quote.price > 30)
   .map(quote => quote.price)
-  .forEach(price => console.log(`Prices higher than $30: ${price}`);
+  .forEach(price => console.log(`Prices higher than $30: ${price}`));
 ```
 
 Now what if this data were to come as some sort of event, for example a stream, such as a WebSocket? Then we could pretty much write the same query to iterate our data, with very little change.
@@ -61,7 +63,7 @@ const subscription = source
   .map(quote => quote.price)
   .subscribe(
     price => console.log(`Prices higher than $30: ${price}`),
-    err => console.log(`Something went wrong: ${err.message}`);
+    err => console.log(`Something went wrong: ${err.message}`)
   );
 
 /* When we're done */
@@ -142,7 +144,7 @@ var distinct = debounced
 Now, let's query Wikipedia!  In RxJS, we can instantly bind to any [Promises A+](https://github.com/promises-aplus/promises-spec) implementation through the `Rx.Observable.fromPromise` method. Or, directly return it and RxJS will wrap it for you.
 
 ```js
-function searchWikipedia (term) {
+let searchWikipedia = (term) => {
   return $.ajax({
     url: 'https://en.wikipedia.org/w/api.php',
     dataType: 'jsonp',
@@ -158,7 +160,7 @@ function searchWikipedia (term) {
 Once that is created, we can tie together the distinct throttled input and query the service.  In this case, we'll call `flatMapLatest` to get the value and ensure we're not introducing any out of order sequence calls.
 
 ```js
-var suggestions = distinct
+const suggestions = distinct
   .flatMapLatest(searchWikipedia);
 ```
 
@@ -169,13 +171,13 @@ suggestions.subscribe(
   data => {
     $results
       .empty()
-      .append($.map(data[1], value =>  $('<li>').text(value)))
+      .append($.map(data[1], value =>  $('<li>').text(value)));
   },
-  error=> {
+  error => {
     $results
       .empty()
       .append($('<li>'))
-        .text('Error:' + error);
+        .text(`Error: ${error}`);
   });
 ```
 
